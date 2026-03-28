@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Firdaus Taxi</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--y:#F5C518;--b:#0A0A0A;--b2:#111;--b3:#1A1A1A;--b4:#242424;--g:#22C55E;--r:#EF4444;--bl:#3B82F6;--t:#fff;--t2:rgba(255,255,255,.55);--t3:rgba(255,255,255,.25);--br:rgba(255,255,255,.08);--br2:rgba(255,255,255,.15)}
+html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;background:var(--b);color:var(--t);-webkit-font-smoothing:antialiased}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes carRock{0%,100%{transform:translateX(-8px) rotate(-1.5deg)}50%{transform:translateX(8px) rotate(1.5deg)}}
+@keyframes glow{0%,100%{opacity:.12}50%{opacity:.38}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes dot1{0%,80%,100%{transform:scale(0);opacity:.4}40%{transform:scale(1);opacity:1}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes notifIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fadeIn .3s ease}
+.hidden{display:none!important}
+/* Splash */
+.splash-car{font-size:88px;animation:carRock 1.8s ease-in-out infinite;text-align:center}
+.splash-glow{width:140px;height:18px;background:var(--y);border-radius:50%;margin:0 auto 26px;filter:blur(14px);animation:glow 1.8s ease-in-out infinite}
+.splash-logo{font-size:46px;font-weight:900;letter-spacing:-.04em;animation:slideUp .5s .2s both}
+.splash-logo b{color:var(--y)}
+.splash-sub{font-size:12px;color:var(--t2);letter-spacing:.13em;text-transform:uppercase;margin-top:6px;animation:slideUp .5s .4s both}
+.splash-dots{display:flex;gap:8px;margin-top:38px;animation:slideUp .5s .6s both}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--b4)}
+.dot:nth-child(1){background:var(--y);animation:dot1 1.2s .0s infinite}
+.dot:nth-child(2){animation:dot1 1.2s .2s infinite}
+.dot:nth-child(3){animation:dot1 1.2s .4s infinite}
+/* Onboard */
+#onboard{padding:0;align-items:stretch;justify-content:flex-start}
+.ob-wrap{width:100%;max-width:420px;margin:0 auto;height:100%;display:flex;flex-direction:column}
+.ob-slides{flex:1;position:relative;overflow:hidden}
+.ob-slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 28px;transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .4s}
+.ob-slide.active{transform:translateX(0);opacity:1}
+.ob-slide.left{transform:translateX(-100%);opacity:0}
+.ob-slide.right{transform:translateX(100%);opacity:0}
+.ob-icon{font-size:110px;animation:bounce 2.5s ease-in-out infinite;text-align:center;margin-bottom:20px}
+.ob-badge{background:var(--y);color:var(--b);font-size:11px;font-weight:800;padding:4px 14px;border-radius:99px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:inline-block}
+.ob-title{font-size:28px;font-weight:900;text-align:center;line-height:1.15;letter-spacing:-.02em;margin-bottom:10px}
+.ob-title b{color:var(--y)}
+.ob-desc{font-size:14px;color:var(--t2);text-align:center;line-height:1.7;max-width:300px}
+.ob-bottom{padding:18px 26px 34px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.ob-dots{display:flex;gap:6px;flex:1}
+.ob-dot{height:7px;border-radius:99px;background:var(--b4);transition:all .3s;width:7px}
+.ob-dot.act{width:22px;background:var(--y)}
+.ob-skip{color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;white-space:nowrap;font-family:inherit}
+.ob-btn{flex:1;background:var(--y);color:var(--b);border:none;padding:15px;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s}
+.ob-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(245,197,24,.4)}
+/* Login */
+#login{padding:20px;background:var(--b)}
+.lg-inner{width:100%;max-width:380px}
+.lg-car{font-size:86px;text-align:center;display:block;animation:carRock 2.5s ease-in-out infinite}
+.lg-glow{width:130px;height:16px;background:var(--y);border-radius:50%;margin:0 auto 20px;filter:blur(12px);animation:glow 2s ease-in-out infinite}
+.lg-logo{font-size:34px;font-weight:900;letter-spacing:-.04em;text-align:center;margin-bottom:4px}
+.lg-logo b{color:var(--y)}
+.lg-tag{font-size:11px;color:var(--t2);letter-spacing:.12em;text-transform:uppercase;text-align:center;margin-bottom:26px}
+.lg-card{background:var(--b2);border:1px solid var(--br2);border-radius:22px;padding:26px}
+.yline{width:36px;height:3px;background:var(--y);border-radius:99px;margin-bottom:12px}
+.ct{font-size:22px;font-weight:900;margin-bottom:4px}
+.ch{font-size:13px;color:var(--t2);margin-bottom:20px}
+.ph-row{display:flex;gap:8px;margin-bottom:8px}
+.prefix{background:var(--b3);border:1px solid var(--br);border-radius:12px;padding:14px 14px;color:var(--t2);font-size:15px;font-weight:700;flex-shrink:0}
+input.fi{background:var(--b3);border:1px solid var(--br);border-radius:12px;padding:14px 16px;color:var(--t);font-size:15px;font-family:inherit;outline:none;transition:all .2s;width:100%}
+input.fi:focus{border-color:var(--y);box-shadow:0 0 0 3px rgba(245,197,24,.15)}
+input.fi::placeholder{color:var(--t3)}
+input.otp-fi{text-align:center;letter-spacing:18px;font-size:28px;font-weight:800;margin-bottom:10px}
+.btn-y{width:100%;background:var(--y);color:var(--b);border:none;padding:16px;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;margin-top:4px}
+.btn-y:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(245,197,24,.45)}
+.btn-y:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.err-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--r);margin-bottom:12px;display:none}
+.err-box.show{display:block}
+.demo-box{background:var(--b3);border:1px solid var(--br);border-radius:12px;padding:13px;margin-top:14px;font-size:12px}
+.demo-title{font-weight:800;margin-bottom:7px;color:var(--t)}
+.demo-row{display:flex;justify-content:space-between;padding:3px 0;color:var(--t2);cursor:pointer}
+.demo-row:hover{color:var(--t)}
+.demo-v{color:var(--y);font-weight:700}
+.back-btn{border:none;background:none;color:var(--t2);cursor:pointer;font-size:13px;margin-bottom:14px;padding:0;font-family:inherit;display:block}
+/* App */
+#app-shell{display:none;flex-direction:row;height:100%}
+#app-shell.vis{display:flex;animation:fadeIn .3s}
+.sidebar{width:248px;min-width:248px;background:var(--b2);border-right:1px solid var(--br);display:flex;flex-direction:column;animation:slideLeft .3s}
+.sb-logo{padding:24px 20px 16px;border-bottom:1px solid var(--br)}
+.sb-logo-t{font-size:21px;font-weight:900;letter-spacing:-.03em}
+.sb-logo-t b{color:var(--y)}
+.sb-logo-s{font-size:10px;color:var(--t2);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.sb-nav{padding:12px 10px;flex:1;overflow-y:auto}
+.sb-sec{font-size:10px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;padding:0 10px;margin:12px 0 5px}
+.nv-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:var(--t2);cursor:pointer;border:none;background:transparent;width:100%;text-align:left;transition:all .15s;font-family:inherit}
+.nv-item:hover{background:var(--b3);color:var(--t)}
+.nv-item.act{background:var(--y);color:var(--b);font-weight:800}
+.nv-ic{width:20px;text-align:center;flex-shrink:0}
+.nv-badge{margin-left:auto;background:var(--r);color:#fff;font-size:11px;font-weight:800;padding:2px 7px;border-radius:99px}
+.nv-item.act .nv-badge{background:rgba(0,0,0,.2);color:var(--b)}
+.sb-user{padding:12px;border-top:1px solid var(--br)}
+.sb-uc{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.avt{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:13px}
+.logout{width:100%;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);border-radius:12px;padding:9px;color:var(--r);font-size:13px;cursor:pointer;font-family:inherit;font-weight:700;transition:all .15s}
+.logout:hover{background:rgba(239,68,68,.16)}
+.topbar{height:62px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid var(--br);background:var(--b2);flex-shrink:0}
+.tb-title{font-size:19px;font-weight:900;flex:1;letter-spacing:-.02em}
+.tb-sub{font-size:12px;color:var(--t2)}
+.content-wrap{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.page{padding:24px;animation:slideUp .25s ease;flex:1}
+/* Cards */
+.card{background:var(--b2);border:1px solid var(--br);border-radius:18px;padding:20px;transition:border-color .2s}
+.card:hover{border-color:var(--br2)}
+.csm{padding:13px;border-radius:12px}
+/* Stats */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
+.sc{background:var(--b2);border:1px solid var(--br);border-radius:18px;padding:19px 20px;position:relative;overflow:hidden;transition:all .2s}
+.sc:hover{transform:translateY(-3px);border-color:rgba(245,197,24,.3)}
+.sc-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:18px 18px 0 0}
+.sc-ic{font-size:22px;margin-bottom:10px;display:block}
+.sc-v{font-size:28px;font-weight:900;line-height:1;letter-spacing:-.03em}
+.sc-l{font-size:12px;color:var(--t2);margin-top:4px;font-weight:500}
+.sc-d{font-size:11px;color:var(--g);margin-top:5px;font-weight:600}
+/* Table */
+.tw{border-radius:16px;overflow:hidden;border:1px solid var(--br)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--b3)}
+th{padding:12px 15px;text-align:left;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+td{padding:12px 15px;border-top:1px solid var(--br);color:var(--t);vertical-align:middle}
+.tr-h:hover td{background:rgba(255,255,255,.025);cursor:pointer}
+.tr-s td{background:rgba(245,197,24,.07)}
+/* Badge */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:700;white-space:nowrap}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+/* Progress */
+.pb{display:flex;align-items:center;gap:10px}
+.pb-bg{flex:1;height:7px;background:var(--b4);border-radius:99px;overflow:hidden}
+.pb-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#E6A800,var(--y));transition:width .6s cubic-bezier(.4,0,.2,1)}
+.pb-lbl{font-size:13px;font-weight:800;color:var(--y);min-width:30px;text-align:right}
+/* Slots */
+.slots{display:flex;gap:6px;margin-top:8px}
+.slot{width:27px;height:27px;border-radius:8px;border:2px solid var(--b4);transition:all .25s}
+.slot.f{background:var(--y);border-color:var(--y);box-shadow:0 0 10px rgba(245,197,24,.4)}
+/* Section */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sh-t{font-size:18px;font-weight:900;letter-spacing:-.02em}
+/* Buttons */
+.ibtn{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.iy{background:var(--y);color:var(--b)}.iy:hover{box-shadow:0 2px 12px rgba(245,197,24,.45)}
+.igh{background:var(--b3);color:var(--t);border:1px solid var(--br2)}.igh:hover{background:var(--b4)}
+.ir{background:rgba(239,68,68,.1);color:var(--r);border:1px solid rgba(239,68,68,.2)}.ir:hover{background:rgba(239,68,68,.18)}
+.abt{width:100%;padding:15px;border-radius:14px;border:none;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s}
+.abt:hover{transform:translateY(-2px)}
+.ay{background:var(--y);color:var(--b);box-shadow:0 4px 18px rgba(245,197,24,.3)}.ay:hover{box-shadow:0 6px 28px rgba(245,197,24,.5)}
+.ag{background:var(--g);color:#fff}
+.ar{background:rgba(239,68,68,.12);color:var(--r);border:1px solid rgba(239,68,68,.2)}
+.agh{background:var(--b3);color:var(--t);border:1px solid var(--br2)}
+/* Toggle */
+.tog{width:50px;height:27px;border-radius:99px;position:relative;transition:background .25s;border:none;cursor:pointer;flex-shrink:0}
+.tok{width:21px;height:21px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 2px 6px rgba(0,0,0,.4)}
+/* Modal */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(6px);animation:fadeIn .2s}
+.mo-box{background:var(--b2);border:1px solid var(--br2);border-radius:22px;padding:26px;width:480px;max-width:95vw;max-height:90vh;overflow-y:auto;animation:slideUp .25s cubic-bezier(.34,1.56,.64,1)}
+.mo-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.mo-t{font-size:20px;font-weight:900}
+.mo-x{background:var(--b3);border:none;width:34px;height:34px;border-radius:10px;color:var(--t2);cursor:pointer;font-size:16px;transition:all .15s}
+.mo-x:hover{background:var(--b4);color:var(--t)}
+.fg{margin-bottom:15px}
+.fl{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+select.fi{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+textarea.fi{resize:vertical;min-height:70px}
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tc-card{padding:18px 12px;border-radius:12px;border:1.5px solid var(--br);cursor:pointer;text-align:center;background:var(--b3);transition:all .2s}
+.tc-card:hover{border-color:var(--br2);transform:translateY(-2px)}
+.tc-card.sel{border-color:var(--y);background:rgba(245,197,24,.08)}
+.dc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dc-card{padding:13px;border-radius:12px;border:1.5px solid var(--br);cursor:pointer;text-align:center;background:var(--b3);transition:all .2s;font-size:13px;font-weight:700}
+.dc-card:hover{border-color:var(--br2)}
+.dc-card.sel{border-color:var(--y);background:rgba(245,197,24,.08);color:var(--y)}
+.cb-row{display:flex;align-items:center;gap:10px;cursor:pointer}
+.cb{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--br2);background:var(--b3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--b)}
+.cb.chk{background:var(--y);border-color:var(--y)}
+.pc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pc-card{padding:12px 8px;border-radius:10px;border:1.5px solid var(--br);cursor:pointer;text-align:center;background:var(--b3);transition:all .15s;font-size:12px;font-weight:700}
+.pc-card.sel{border-color:var(--y);background:rgba(245,197,24,.08);color:var(--y)}
+.step-btns{display:flex;gap:8px;margin-top:4px}
+/* Detail panel */
+.dp{width:330px;min-width:330px;background:var(--b2);border-left:1px solid var(--br);padding:20px;overflow-y:auto;animation:slideLeft .2s ease}
+/* Timeline */
+.tl{position:relative;padding-left:22px}
+.tl::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--br2)}
+.tl-i{position:relative;margin-bottom:17px}
+.tl-d{position:absolute;left:-22px;top:3px;width:15px;height:15px;border-radius:50%;border:2px solid var(--b4);background:var(--b2);transition:all .3s}
+.tl-i.done .tl-d{background:var(--y);border-color:var(--y)}
+.tl-i.cur .tl-d{background:var(--bl);border-color:var(--bl)}
+.tl-l{font-size:13px;font-weight:600;color:var(--t2)}
+.tl-i.done .tl-l,.tl-i.cur .tl-l{color:var(--t)}
+/* Driver */
+.dr-card{background:var(--b3);border:1px solid var(--br2);border-radius:18px;padding:19px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+/* Notif */
+.nf-stack{position:fixed;bottom:22px;right:22px;display:flex;flex-direction:column;gap:8px;z-index:999}
+.nf{background:var(--b3);border:1px solid var(--br2);border-left:3px solid var(--y);border-radius:12px;padding:12px 15px;max-width:300px;cursor:pointer;animation:notifIn .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.nf-t{font-weight:800;font-size:13px;margin-bottom:2px}
+.nf-b{color:var(--t2);font-size:12px}
+/* Empty */
+.emp{text-align:center;padding:56px 20px;color:var(--t2)}
+.emp-ic{font-size:46px;margin-bottom:12px;display:block;animation:bounce 2s ease-in-out infinite}
+.yline{width:36px;height:3px;background:var(--y);border-radius:99px;margin-bottom:12px}
+.go-orders{border-top:1px solid var(--br);margin-top:13px;padding-top:13px}
+@media(max-width:900px){.sg{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.page{padding:16px}.sg{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash" class="screen">
+  <div class="splash-car">&#x1F695;</div>
+  <div class="splash-glow"></div>
+  <div class="splash-logo">Firdaus<b> Taxi</b></div>
+  <div class="splash-sub">Yo&#x2018;lovchi va yuk tashish</div>
+  <div class="splash-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboard" class="screen hidden">
+  <div class="ob-wrap">
+    <div class="ob-slides">
+      <div class="ob-slide active" id="ob0"><div class="ob-icon">&#x1F697;</div><div class="ob-badge">Tez va qulay</div><h2 class="ob-title">Bir marta <b>buyurtma</b></h2><p class="ob-desc">Farg&#x02BC;ona va Toshkent orasida istalgan vaqt yo&#x02BC;lovchi yoki yuk jo&#x02BC;nating.</p></div>
+      <div class="ob-slide right" id="ob1"><div class="ob-icon">&#x1F4B0;</div><div class="ob-badge">Tejamli</div><h2 class="ob-title">Guruh <b>pooling</b> tizimi</h2><p class="ob-desc">Mashina 4 ta joy to&#x02BC;lganda jo&#x02BC;naydi. Narx sizning foydangizga.</p></div>
+      <div class="ob-slide right" id="ob2"><div class="ob-icon">&#x1F4CD;</div><div class="ob-badge">Real-vaqt</div><h2 class="ob-title">Haydovchini <b>kuzating</b></h2><p class="ob-desc">Buyurtma holati va haydovchi yo&#x02BC;li &#x2014; barchasini real vaqtda ko&#x02BC;ring.</p></div>
+      <div class="ob-slide right" id="ob3"><div class="ob-icon">&#x1F4E6;</div><div class="ob-badge">Ishonchli</div><h2 class="ob-title">Yuk va <b>pochta</b> ham</h2><p class="ob-desc">Paket, kiyim, hujjat &#x2014; istalgan yukni xavfsiz jo&#x02BC;nating.</p></div>
+    </div>
+    <div class="ob-bottom">
+      <div class="ob-dots" id="ob-dots"><div class="ob-dot act"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+      <button class="ob-skip" onclick="showLogin()">O&#x02BC;tkazish</button>
+      <button class="ob-btn" id="ob-btn" onclick="obNext()">Keyingi</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login" class="screen hidden">
+  <div class="lg-inner">
+    <div class="lg-car">&#x1F695;</div>
+    <div class="lg-glow"></div>
+    <div class="lg-logo">Firdaus<b> Taxi</b></div>
+    <div class="lg-tag">Yo&#x02BC;lovchi va yuk tashish</div>
+    <div class="lg-card" id="step-phone">
+      <div class="yline"></div>
+      <div class="ct">Kirish</div>
+      <div class="ch">Telefon raqamingizni kiriting</div>
+      <div class="fg">
+        <label class="fl">Telefon raqam</label>
+        <div class="ph-row">
+          <div class="prefix">+998</div>
+          <input class="fi" id="ph-in" type="tel" maxlength="9" placeholder="90 123 45 67" oninput="this.value=this.value.replace(/\D/g,'').slice(0,9);upSend()">
+        </div>
+      </div>
+      <div class="err-box" id="ph-err">Telefon topilmadi</div>
+      <button class="btn-y" id="send-btn" disabled onclick="sendOtp()">SMS kod olish &#x2192;</button>
+      <div class="demo-box">
+        <div class="demo-title">Demo kirish:</div>
+        <div class="demo-row" onclick="fillPh('901234567')"><span>Mijoz: <span class="demo-v">901234567</span></span><span>Kod: <span class="demo-v">1111</span></span></div>
+        <div class="demo-row" onclick="fillPh('901001001')"><span>Haydovchi: <span class="demo-v">901001001</span></span><span>Kod: <span class="demo-v">2222</span></span></div>
+        <div class="demo-row" onclick="fillPh('900000000')"><span>Admin: <span class="demo-v">900000000</span></span><span>Kod: <span class="demo-v">0000</span></span></div>
+      </div>
+    </div>
+    <div class="lg-card hidden" id="step-otp">
+      <button class="back-btn" onclick="backPh()">&#x2190; Orqaga</button>
+      <div class="yline"></div>
+      <div class="ct">SMS kodni kiriting</div>
+      <div class="ch" id="otp-hint">Telefonga yuborildi</div>
+      <div class="fg"><label class="fl">Tasdiqlash kodi</label><input class="fi otp-fi" id="otp-in" type="tel" maxlength="4" placeholder="&#x2022; &#x2022; &#x2022; &#x2022;" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4);upVerify()"></div>
+      <div class="err-box" id="otp-err">Noto&#x02BC;g&#x02BC;ri kod</div>
+      <button class="btn-y" id="ver-btn" disabled onclick="verifyOtp()">Kirish &#x2713;</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app-shell">
+  <div class="sidebar">
+    <div class="sb-logo"><div class="sb-logo-t">Firdaus<b> Taxi</b></div><div class="sb-logo-s">Yo&#x02BC;lovchi va yuk tashish</div></div>
+    <div class="sb-nav" id="sb-nav"></div>
+    <div class="sb-user">
+      <div class="sb-uc">
+        <div class="avt" id="u-avt" style="width:38px;height:38px;background:var(--y);color:var(--b)"></div>
+        <div><div id="u-name" style="font-size:14px;font-weight:700"></div><div id="u-role" style="font-size:11px;font-weight:600"></div></div>
+      </div>
+      <button class="logout" onclick="doLogout()">Chiqish</button>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div class="topbar"><div class="tb-title" id="tb-t">Dashboard</div><div class="tb-sub" id="tb-s"></div></div>
+    <div class="content-wrap" id="content"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="mo hidden" id="modal">
+  <div class="mo-box">
+    <div class="mo-hd"><div class="mo-t" id="mo-title"></div><button class="mo-x" onclick="closeModal()">&#x2715;</button></div>
+    <div id="mo-body"></div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="nf-stack" id="nf-stack"></div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────
+var USERS = {
+  "+998901234567":{role:"client", name:"Alisher Karimov",    otp:"1111"},
+  "+998901001001":{role:"driver", name:"Jasurbek Toshmatov", otp:"2222"},
+  "+998900000000":{role:"admin",  name:"Admin",              otp:"0000"}
+};
+
+var S = {
+  user:null,
+  orders:[
+    {id:"o1",cid:"u1",cn:"Alisher Karimov",cp:"+998901234567",gid:"g2",type:"passenger",dir:"tf",date:"2025-04-02",time:"09:30",slots:1,status:"ready",    price:80000,ts:"2025-04-01T10:00:00Z"},
+    {id:"o2",cid:"u2",cn:"Mohira Yusupova", cp:"+998901111111",gid:"g1",type:"cargo",    dir:"ft",date:"2025-04-02",time:"08:00",slots:1,status:"waiting",  price:40000,ts:"2025-04-01T11:00:00Z"},
+    {id:"o3",cid:"u3",cn:"Bobur Rahimov",   cp:"+998902222222",gid:"g1",type:"passenger",dir:"ft",date:"2025-04-02",time:"08:00",slots:1,status:"waiting",  price:80000,ts:"2025-04-01T11:30:00Z"},
+    {id:"o4",cid:"u4",cn:"Nilufar Saidova", cp:"+998903333333",gid:"g4",type:"passenger",dir:"tf",date:"2025-04-01",time:"10:00",slots:1,status:"delivered",price:80000,ts:"2025-03-31T08:00:00Z"},
+    {id:"o5",cid:"u1",cn:"Alisher Karimov",cp:"+998901234567",gid:"g3",type:"passenger",dir:"ft",date:"2025-04-03",time:"07:00",slots:1,status:"waiting",  price:80000,ts:"2025-04-01T14:00:00Z"}
+  ],
+  groups:[
+    {id:"g1",dir:"ft",date:"2025-04-02",time:"08:00",total:4,used:3,status:"waiting",dn:"Jasurbek Toshmatov",dcar:"Nexia 3",dnum:"01A234BC"},
+    {id:"g2",dir:"tf",date:"2025-04-02",time:"09:30",total:4,used:4,status:"ready",  dn:"Sardor Umarov",    dcar:"Cobalt",  dnum:"30B112CD"},
+    {id:"g3",dir:"ft",date:"2025-04-03",time:"07:00",total:4,used:1,status:"waiting",dn:null},
+    {id:"g4",dir:"tf",date:"2025-04-01",time:"10:00",total:4,used:4,status:"delivered",dn:"Jasurbek Toshmatov",dcar:"Nexia 3",dnum:"01A234BC"}
+  ],
+  drivers:[
+    {id:"d1",name:"Jasurbek Toshmatov",phone:"+998901001001",rating:4.8,car:"Chevrolet Nexia 3",num:"01A234BC",color:"Oq",    year:2021,status:"online", ver:true, trips:128,earn:18500000},
+    {id:"d2",name:"Sardor Umarov",     phone:"+998902002002",rating:4.6,car:"Chevrolet Cobalt",  num:"30B112CD",color:"Kulrang",year:2022,status:"on_trip",ver:true, trips:89, earn:12200000},
+    {id:"d3",name:"Kamol Xasanov",     phone:"+998903003003",rating:4.9,car:"Hyundai Accent",    num:"10C567EF",color:"Qora",  year:2020,status:"offline",ver:false,trips:12, earn:1800000}
+  ],
+  pricing:[
+    {dir:"ft",pass:80000,sm:20000,md:40000,lg:70000,xl:120000},
+    {dir:"tf",pass:80000,sm:20000,md:40000,lg:70000,xl:120000}
+  ],
+  drOnline:false,drTrip:"idle",
+  selOrd:null,
+  no:{type:"passenger",dir:"ft",date:new Date().toISOString().slice(0,10),time:"08:00",step:1,pay:"cash",fragile:false}
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────
+function fmt(n){return Number(n).toLocaleString()+" so'm"}
+function ini(n){return n?n.split(" ").map(function(w){return w[0]}).join("").slice(0,2).toUpperCase():"?"}
+function dirl(d){return d==="ft"?"Farg\u02bcona \u2192 Toshkent":"Toshkent \u2192 Farg\u02bcona"}
+function dirs(d){return d==="ft"?"FG\u2192TK":"TK\u2192FG"}
+var SS={
+  waiting:{c:"#94A3B8",bg:"rgba(148,163,184,.12)",l:"Kutilmoqda"},
+  ready:{c:"#F5C518",bg:"rgba(245,197,24,.12)",l:"Tayyor"},
+  on_the_way:{c:"#3B82F6",bg:"rgba(59,130,246,.12)",l:"Yo\u02bcl da"},
+  delivered:{c:"#22C55E",bg:"rgba(34,197,94,.12)",l:"Yetkazildi"},
+  cancelled:{c:"#EF4444",bg:"rgba(239,68,68,.12)",l:"Bekor"},
+  online:{c:"#22C55E",bg:"rgba(34,197,94,.12)",l:"Online"},
+  offline:{c:"#94A3B8",bg:"rgba(148,163,184,.12)",l:"Offline"},
+  on_trip:{c:"#3B82F6",bg:"rgba(59,130,246,.12)",l:"Sayohatda"},
+  passenger:{c:"#A78BFA",bg:"rgba(167,139,250,.12)",l:"Yo\u02bclovchi"},
+  cargo:{c:"#FB923C",bg:"rgba(251,146,60,.12)",l:"Yuk"}
+};
+function bdg(t){var s=SS[t]||{c:"#888",bg:"rgba(136,136,136,.12)",l:t};return'<span class="badge" style="color:'+s.c+';background:'+s.bg+'">'+s.l+'</span>'}
+function pbr(u,t){var p=Math.min((u/t)*100,100);return'<div class="pb"><div class="pb-bg"><div class="pb-fill" style="width:'+p+'%"></div></div><span class="pb-lbl">'+u+'/'+t+'</span></div>'}
+function slts(u,t){var h='<div class="slots">';for(var i=0;i<t;i++)h+='<div class="slot'+(i<u?' f':'')+'"></div>';return h+'</div>'}
+function g$(id){return document.getElementById(id)}
+function html(id,h){g$(id).innerHTML=h}
+
+// ── SPLASH + ONBOARD ──────────────────────────────────────────────────
+var obIdx=0;
+setTimeout(function(){g$('splash').classList.add('hidden');g$('onboard').classList.remove('hidden');},2200);
+
+function obNext(){
+  if(obIdx<3){
+    g$('ob'+obIdx).className='ob-slide left';
+    obIdx++;
+    g$('ob'+obIdx).className='ob-slide active';
+    var dots=g$('ob-dots').children;
+    for(var i=0;i<dots.length;i++)dots[i].className='ob-dot'+(i===obIdx?' act':'');
+    if(obIdx===3)g$('ob-btn').textContent='Boshlash';
+  }else{showLogin();}
+}
+function showLogin(){g$('onboard').classList.add('hidden');g$('login').classList.remove('hidden');}
+
+// ── LOGIN ─────────────────────────────────────────────────────────────
+function fillPh(p){g$('ph-in').value=p;upSend();}
+function upSend(){var v=g$('ph-in').value;g$('send-btn').disabled=v.length<9;g$('ph-err').classList.remove('show');}
+function upVerify(){var v=g$('otp-in').value;g$('ver-btn').disabled=v.length<4;g$('otp-err').classList.remove('show');}
+function sendOtp(){
+  var ph='+998'+g$('ph-in').value;
+  if(!USERS[ph]){g$('ph-err').classList.add('show');return;}
+  g$('send-btn').textContent='Yuklanmoqda...';
+  setTimeout(function(){
+    g$('step-phone').classList.add('hidden');
+    g$('step-otp').classList.remove('hidden');
+    g$('otp-hint').textContent=ph+' ga yuborildi';
+    g$('otp-in').focus();
+    g$('send-btn').textContent='SMS kod olish \u2192';
+  },800);
+}
+function backPh(){
+  g$('step-otp').classList.add('hidden');
+  g$('step-phone').classList.remove('hidden');
+  g$('otp-in').value='';
+  g$('otp-err').classList.remove('show');
+}
+function verifyOtp(){
+  var ph='+998'+g$('ph-in').value,otp=g$('otp-in').value,u=USERS[ph];
+  if(!u||otp!==u.otp){g$('otp-err').classList.add('show');return;}
+  g$('ver-btn').textContent='Tekshirilmoqda...';
+  S.user={phone:ph,role:u.role,name:u.name};
+  setTimeout(startApp,700);
+}
+
+// ── APP SHELL ─────────────────────────────────────────────────────────
+var PAGES={
+  admin:[{id:'dashboard',l:'Dashboard',ic:'&#x1F4CA;'},{id:'orders',l:'Buyurtmalar',ic:'&#x1F4CB;'},{id:'groups',l:'Guruhlar',ic:'&#x1F68C;'},{id:'drivers',l:'Haydovchilar',ic:'&#x1F697;'},{id:'pricing',l:'Narxlar',ic:'&#x1F4B0;'}],
+  driver:[{id:'driver',l:'Mening ekranim',ic:'&#x1F697;'}],
+  client:[{id:'client',l:'Buyurtmalarim',ic:'&#x1F4CB;'}]
+};
+var PTITLE={dashboard:'Dashboard',orders:'Barcha buyurtmalar',groups:'Guruhlar (Mashinalar)',drivers:'Haydovchilar',pricing:'Narxlar sozlamasi',driver:'Haydovchi ilovasi',client:'Buyurtmalarim'};
+var RC={admin:'var(--bl)',driver:'var(--g)',client:'var(--y)'};
+var RL={admin:'Administrator',driver:'Haydovchi',client:'Mijoz'};
+var curPage='dashboard';
+
+function startApp(){
+  g$('login').classList.add('hidden');
+  g$('app-shell').classList.add('vis');
+  var u=S.user;
+  var avt=g$('u-avt');avt.textContent=ini(u.name);avt.style.background=RC[u.role];avt.style.color=u.role==='client'?'var(--b)':'#fff';
+  g$('u-name').textContent=u.name;
+  g$('u-role').textContent=RL[u.role];g$('u-role').style.color=RC[u.role];
+  curPage={admin:'dashboard',driver:'driver',client:'client'}[u.role];
+  buildNav();renderPage(curPage);
+}
+
+function buildNav(){
+  var nav=PAGES[S.user.role]||[];
+  var pending=S.orders.filter(function(o){return o.status==='waiting';}).length;
+  var h='<div class="sb-sec">Menyu</div>';
+  nav.forEach(function(p){
+    var b=p.id==='orders'&&pending>0?'<span class="nv-badge">'+pending+'</span>':'';
+    h+='<button class="nv-item'+(p.id===curPage?' act':'')+'" onclick="goPage(\''+p.id+'\')">'+'<span class="nv-ic">'+p.ic+'</span>'+p.l+b+'</button>';
+  });
+  html('sb-nav',h);
+}
+
+function goPage(id){curPage=id;buildNav();renderPage(id);S.selOrd=null;}
+
+function renderPage(id){
+  g$('tb-t').textContent=PTITLE[id]||id;
+  g$('tb-s').textContent=S.orders.length+' ta buyurtma';
+  var c=g$('content');
+  if(id==='dashboard')c.innerHTML=pageDash();
+  else if(id==='orders'){c.innerHTML=pageOrders();}
+  else if(id==='groups')c.innerHTML=pageGroups();
+  else if(id==='drivers')c.innerHTML=pageDrivers();
+  else if(id==='pricing')c.innerHTML=pagePricing();
+  else if(id==='driver')c.innerHTML=pageDriver();
+  else if(id==='client')c.innerHTML=pageClient();
+}
+
+function doLogout(){
+  S.user=null;
+  g$('app-shell').classList.remove('vis');
+  g$('ph-in').value='';g$('otp-in').value='';
+  g$('step-otp').classList.add('hidden');g$('step-phone').classList.remove('hidden');
+  g$('send-btn').disabled=true;
+  g$('login').classList.remove('hidden');
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────
+function pageDash(){
+  var total=S.orders.length;
+  var active=S.groups.filter(function(g){return g.status==='waiting'||g.status==='ready';}).length;
+  var today=S.orders.filter(function(o){return o.date==='2025-04-02';}).length;
+  var rev=S.orders.filter(function(o){return o.status==='delivered';}).reduce(function(s,o){return s+o.price;},0);
+  var recent=[].concat(S.orders).sort(function(a,b){return new Date(b.ts)-new Date(a.ts);}).slice(0,5);
+  var ag=S.groups.filter(function(g){return g.status==='waiting'||g.status==='ready';});
+  return '<div class="page"><div class="sg">'+
+    sc('&#x1F4CB;',total,'Jami buyurtmalar','var(--y)','&#x2191; 12% bu hafta')+
+    sc('&#x1F68C;',active,'Faol guruhlar','var(--g)','')+
+    sc('&#x1F4C5;',today,'Bugungi','#F59E0B','')+
+    sc('&#x1F4B0;',(rev/1000000).toFixed(1)+'M','Daromad (M)','#A78BFA','')+
+    '</div><div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px">'+
+    '<div><div class="sh"><div class="sh-t">Oxirgi buyurtmalar</div></div><div class="tw"><table><thead><tr><th>Mijoz</th><th>Tur</th><th>Yo\'nalish</th><th>Narx</th><th>Holat</th></tr></thead><tbody>'+
+    recent.map(function(o){return'<tr><td><b style="font-size:13px">'+o.cn+'</b><br><span style="color:var(--t2);font-size:11px">'+o.cp+'</span></td><td>'+bdg(o.type)+'</td><td style="font-size:12px;color:var(--y)">'+dirl(o.dir)+'</td><td style="font-weight:700">'+fmt(o.price)+'</td><td>'+bdg(o.status)+'</td></tr>';}).join('')+
+    '</tbody></table></div></div>'+
+    '<div><div class="sh"><div class="sh-t">Faol guruhlar</div></div><div style="display:flex;flex-direction:column;gap:10px">'+
+    ag.map(function(g){return'<div class="card csm"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><div><div style="font-size:13px;font-weight:800;color:var(--y)">'+dirl(g.dir)+'</div><div style="font-size:11px;color:var(--t2);margin-top:2px">'+g.date+' '+g.time+'</div></div>'+bdg(g.status)+'</div>'+pbr(g.used,g.total)+(g.dn?'<div style="font-size:11px;color:var(--t2);margin-top:7px">&#x1F697; '+g.dn+'</div>':'')+'</div>';}).join('')+
+    '</div></div></div></div>';
+}
+function sc(ic,v,l,c,d){return'<div class="sc"><div class="sc-bar" style="background:'+c+'"></div><span class="sc-ic">'+ic+'</span><div class="sc-v">'+v+'</div><div class="sc-l">'+l+'</div>'+(d?'<div class="sc-d">'+d+'</div>':'')+'</div>';}
+
+// ── ORDERS ────────────────────────────────────────────────────────────
+var fSt='',fDir='',fTp='';
+function pageOrders(){
+  var filtered=S.orders.filter(function(o){return(!fSt||o.status===fSt)&&(!fDir||o.dir===fDir)&&(!fTp||o.type===fTp);});
+  var sel=S.selOrd;var selO=sel?S.orders.find(function(o){return o.id===sel;}):null;
+  var selG=selO?S.groups.find(function(g){return g.id===selO.gid;}):null;
+  var tls=['waiting','ready','on_the_way','delivered'];
+  var tll=['Kutilmoqda','Tayyor',"Yo\u02bcl da",'Yetkazildi'];
+  var tableH='<div style="flex:1;overflow:auto"><div class="page-main" style="padding:24px">'+
+    '<div class="sh"><div class="sh-t">Buyurtmalar</div><button class="ibtn iy" onclick="openNewOrder()">+ Yangi buyurtma</button></div>'+
+    '<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">'+
+    '<select class="fi" style="width:auto;padding:9px 34px 9px 12px;font-size:13px" onchange="fSt=this.value;reOrd()"><option value="">Barcha holat</option>'+tls.map(function(s){return'<option value="'+s+'"'+(fSt===s?' selected':'')+'>'+SS[s].l+'</option>';}).join('')+'<option value="cancelled"'+(fSt==='cancelled'?' selected':'')+'>Bekor</option></select>'+
+    '<select class="fi" style="width:auto;padding:9px 34px 9px 12px;font-size:13px" onchange="fDir=this.value;reOrd()"><option value="">Barcha yo\'nalish</option><option value="ft"'+(fDir==='ft'?' selected':'')+'>Farg\'ona&#x2192;TK</option><option value="tf"'+(fDir==='tf'?' selected':'')+'>TK&#x2192;Farg\'ona</option></select>'+
+    '<select class="fi" style="width:auto;padding:9px 34px 9px 12px;font-size:13px" onchange="fTp=this.value;reOrd()"><option value="">Barcha tur</option><option value="passenger"'+(fTp==='passenger'?' selected':'')+'>Yo\'lovchi</option><option value="cargo"'+(fTp==='cargo'?' selected':'')+'>Yuk</option></select>'+
+    '</div>'+
+    '<div class="tw"><table><thead><tr><th>ID</th><th>Mijoz</th><th>Tur</th><th>Yo\'nalish</th><th>Sana</th><th>Narx</th><th>Holat</th><th>Amal</th></tr></thead><tbody>'+
+    (filtered.length?filtered.map(function(o){return'<tr class="tr-h'+(sel===o.id?' tr-s':'')+'" onclick="selOrd(\''+o.id+'\')">'+
+      '<td style="font-size:11px;color:var(--t2);font-family:monospace">'+o.id+'</td>'+
+      '<td><b style="font-size:13px">'+o.cn+'</b><br><span style="font-size:11px;color:var(--t2)">'+o.cp+'</span></td>'+
+      '<td>'+bdg(o.type)+'</td>'+
+      '<td style="font-size:12px;color:var(--y);font-weight:600">'+dirs(o.dir)+'</td>'+
+      '<td style="font-size:12px;color:var(--t2)">'+o.date+'<br>'+o.time+'</td>'+
+      '<td style="font-weight:700">'+fmt(o.price)+'</td>'+
+      '<td>'+bdg(o.status)+'</td>'+
+      '<td onclick="event.stopPropagation()"><select class="fi" style="width:120px;padding:7px 28px 7px 8px;font-size:12px" onchange="chgSt(\''+o.id+'\',this.value)">'+tls.map(function(s){return'<option value="'+s+'"'+(o.status===s?' selected':'')+'>'+SS[s].l+'</option>';}).join('')+'<option value="cancelled"'+(o.status==='cancelled'?' selected':'')+'>Bekor</option></select></td>'+
+    '</tr>';}).join(''):'<tr><td colspan="8"><div class="emp"><span class="emp-ic">&#x1F4ED;</span>Topilmadi</div></td></tr>')+
+    '</tbody></table></div></div></div>';
+  var detH='';
+  if(selO){
+    var ci=tls.indexOf(selO.status);
+    detH='<div class="dp"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
+      '<div style="font-size:17px;font-weight:900">Tafsilot</div>'+
+      '<button class="mo-x" onclick="selOrd(null)">&#x2715;</button></div>'+
+      '<div style="display:flex;gap:6px;margin-bottom:13px">'+bdg(selO.type)+' '+bdg(selO.status)+'</div>'+
+      '<div class="card csm" style="margin-bottom:10px"><div style="font-size:11px;color:var(--t2);margin-bottom:4px">Yo\'nalish</div><div style="font-size:15px;font-weight:800;color:var(--y)">'+dirl(selO.dir)+'</div><div style="font-size:12px;color:var(--t2);margin-top:3px">'+selO.date+' '+selO.time+'</div></div>'+
+      '<div class="card csm" style="margin-bottom:10px"><div style="font-size:11px;color:var(--t2);margin-bottom:6px">Mijoz</div><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:var(--y);color:var(--b);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px">'+ini(selO.cn)+'</div><div><div style="font-size:13px;font-weight:700">'+selO.cn+'</div><div style="font-size:11px;color:var(--t2)">'+selO.cp+'</div></div></div></div>'+
+      (selG?'<div class="card csm" style="margin-bottom:10px"><div style="font-size:11px;color:var(--t2);margin-bottom:7px">Joy to\'lishi</div>'+pbr(selG.used,selG.total)+slts(selG.used,selG.total)+(selG.dn?'<div style="font-size:11px;color:var(--t2);margin-top:7px">&#x1F697; '+selG.dn+'</div>':'')+'</div>':'')+
+      '<div class="card csm" style="margin-bottom:13px"><div style="font-size:11px;color:var(--t2);margin-bottom:4px">To\'lov</div><div style="font-size:22px;font-weight:900;color:var(--y)">'+fmt(selO.price)+'</div></div>'+
+      '<div style="font-size:11px;color:var(--t2);font-weight:700;text-transform:uppercase;margin-bottom:9px">Holat zanjiri</div>'+
+      '<div class="tl">'+tls.map(function(s,i){return'<div class="tl-i'+(i<ci?' done':'')+(i===ci?' cur':'')+'"><div class="tl-d"></div><div class="tl-l">'+tll[i]+'</div></div>';}).join('')+'</div></div>';
+  }
+  return '<div style="display:flex;flex:1;overflow:hidden">'+tableH+detH+'</div>';
+}
+function reOrd(){g$('content').innerHTML=pageOrders();}
+function selOrd(id){S.selOrd=id;reOrd();}
+function chgSt(id,st){
+  S.orders=S.orders.map(function(o){return o.id===id?Object.assign({},o,{status:st}):o;});
+  addNf('Status yangilandi',(SS[st]&&SS[st].l)||st);reOrd();buildNav();
+}
+
+// ── GROUPS ────────────────────────────────────────────────────────────
+function pageGroups(){
+  return '<div class="page"><div class="sh"><div class="sh-t">Guruhlar (Mashinalar)</div></div>'+
+  '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px">'+
+  S.groups.map(function(g){
+    var go=S.orders.filter(function(o){return o.gid===g.id;});
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:13px"><div><div style="font-size:15px;font-weight:800;color:var(--y);margin-bottom:3px">'+dirl(g.dir)+'</div><div style="font-size:12px;color:var(--t2)">'+g.date+' '+g.time+'</div></div>'+bdg(g.status)+'</div>'+
+    '<div style="margin-bottom:11px"><div style="font-size:11px;color:var(--t2);margin-bottom:5px">Joy to\'lishi</div>'+pbr(g.used,g.total)+slts(g.used,g.total)+'</div>'+
+    (g.dn?'<div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--b3);border-radius:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--y);color:var(--b);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px">'+ini(g.dn)+'</div><div><div style="font-size:12px;font-weight:700">'+g.dn+'</div><div style="font-size:11px;color:var(--t2)">'+g.dcar+' &mdash; '+g.dnum+'</div></div></div>':'<div style="font-size:12px;color:var(--t2);padding:8px;background:var(--b3);border-radius:10px;text-align:center">Haydovchi biriktirilmagan</div>')+
+    (go.length?'<div class="go-orders"><div style="font-size:11px;color:var(--t2);margin-bottom:6px">Buyurtmalar ('+go.length+')</div>'+go.map(function(o){return'<div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0"><span>'+(o.type==='passenger'?'&#x1F6B6;':'&#x1F4E6;')+' '+o.cn+'</span><span style="color:var(--y)">'+fmt(o.price)+'</span></div>';}).join('')+'</div>':'')+
+    '</div>';
+  }).join('')+'</div></div>';
+}
+
+// ── DRIVERS ───────────────────────────────────────────────────────────
+function pageDrivers(){
+  return '<div class="page"><div class="sh"><div class="sh-t">Haydovchilar</div></div>'+
+  '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:13px">'+
+  S.drivers.map(function(d){return'<div class="card">'+
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px"><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:50%;background:var(--y);color:var(--b);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">'+ini(d.name)+'</div><div><div style="font-weight:800;font-size:15px">'+d.name+'</div><div style="font-size:12px;color:var(--t2)">'+d.phone+'</div></div></div>'+bdg(d.status)+'</div>'+
+    '<div style="background:var(--b3);border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px">'+[['Mashina',d.car],['Raqam',d.num],['Rang / Yil',d.color+' &mdash; '+d.year]].map(function(x){return'<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:var(--t2)">'+x[0]+'</span><span style="font-weight:700">'+x[1]+'</span></div>';}).join('')+'</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:13px">'+[[d.trips,'Jami safar'],[(d.earn/1000000).toFixed(1)+'M','Daromad'],['&#x2B50; '+d.rating,'Reyting']].map(function(x){return'<div style="background:var(--b3);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:900;color:var(--y)">'+x[0]+'</div><div style="font-size:10px;color:var(--t2);margin-top:2px">'+x[1]+'</div></div>';}).join('')+'</div>'+
+    (d.ver?'<span style="font-size:12px;color:var(--g)">&#x2705; Tasdiqlangan</span>':'<button class="ibtn iy" onclick="verDrv(\''+d.id+'\')">Tasdiqlash</button>')+
+    '</div>';}).join('')+'</div></div>';
+}
+function verDrv(id){S.drivers=S.drivers.map(function(d){return d.id===id?Object.assign({},d,{ver:true}):d;});renderPage('drivers');addNf('Haydovchi tasdiqlandi &#x2705;',"Platforma foydalanishga ruxsat berildi.");}
+
+// ── PRICING ───────────────────────────────────────────────────────────
+function pagePricing(){
+  var flds=[['pass',"Yo\u02bclovchi (1 slot)"],['sm','Yuk kichik &le;5kg'],['md',"Yuk o\u02bcrta &le;20kg"],['lg','Yuk katta &le;50kg'],['xl','Yuk XL &gt;50kg']];
+  return '<div class="page" style="max-width:700px"><div class="sh"><div class="sh-t">Narxlar sozlamasi</div></div>'+
+  S.pricing.map(function(p,pi){return'<div class="card" style="margin-bottom:14px"><h3 style="font-size:16px;font-weight:800;color:var(--y);margin-bottom:16px">'+dirl(p.dir)+'</h3>'+
+  '<div class="fr" style="gap:13px">'+flds.map(function(f){return'<div class="fg" style="margin:0"><label class="fl">'+f[1]+'</label><input class="fi" type="number" value="'+p[f[0]]+'" step="1000" onchange="S.pricing['+pi+'][\''+f[0]+'\']=Number(this.value)"></div>';}).join('')+'</div>'+
+  '<button class="ibtn iy" style="margin-top:14px" onclick="addNf(\'Narxlar saqlandi &#x2705;\',\''+dirl(p.dir)+' narxlari yangilandi.\')">Saqlash</button>'+
+  '</div>';}).join('')+'</div>';
+}
+
+// ── DRIVER APP ────────────────────────────────────────────────────────
+function pageDriver(){
+  var g=S.groups.find(function(x){return x.id==='g1';});
+  var go=g?S.orders.filter(function(o){return o.gid===g.id;}):[];
+  var on=S.drOnline,ts=S.drTrip;
+  var stTxt=ts==='started'?'&#x1F697; Sayohatda':on?'&#x1F7E2; Online':'&#x26AB; Offline';
+  var stC=ts==='started'?'var(--bl)':on?'var(--g)':'var(--t2)';
+  return '<div class="page" style="max-width:500px">'+
+  '<div class="dr-card"><div><div style="font-size:12px;color:var(--t2);margin-bottom:3px">Holat</div><div style="font-size:20px;font-weight:900;color:'+stC+'">'+stTxt+'</div></div>'+
+  '<button class="tog" onclick="togDrv()" style="background:'+(on?'var(--g)':'var(--b4)')+'"><div class="tok" style="transform:'+(on?'translateX(23px)':'none')+'"></div></button></div>'+
+  '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">'+
+  [['42','Jami safar'],['3.2M','Daromad'],['&#x2B50; 4.8','Reyting']].map(function(x){return'<div class="card csm" style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--y)">'+x[0]+'</div><div style="font-size:11px;color:var(--t2);margin-top:3px">'+x[1]+'</div></div>';}).join('')+'</div>'+
+  (on&&g?'<div class="card" style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;margin-bottom:11px"><div style="font-size:15px;font-weight:800;color:var(--y)">'+dirl(g.dir)+'</div>'+bdg(g.status)+'</div>'+
+  '<div style="font-size:12px;color:var(--t2);margin-bottom:11px">'+g.date+' '+g.time+'</div>'+pbr(g.used,g.total)+slts(g.used,g.total)+
+  '<div class="go-orders"><div style="font-size:11px;color:var(--t2);font-weight:700;text-transform:uppercase;margin-bottom:7px">Yo\'lovchilar</div>'+
+  go.map(function(o){return'<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--br)"><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--y);color:var(--b);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800">'+ini(o.cn)+'</div><div><div style="font-size:12px;font-weight:700">'+o.cn+'</div><div style="font-size:11px;color:var(--t2)">'+(o.type==='passenger'?"Yo\u02bclovchi":'Yuk')+'</div></div></div><span style="font-size:13px;font-weight:800;color:var(--y)">'+fmt(o.price)+'</span></div>';}).join('')+
+  '<div style="display:flex;justify-content:space-between;margin-top:10px"><span style="color:var(--t2)">Jami:</span><span style="font-size:17px;font-weight:900;color:var(--g)">'+fmt(go.reduce(function(s,o){return s+o.price;},0))+'</span></div></div></div>':
+  on?'<div style="text-align:center;padding:38px;color:var(--t2);background:var(--b2);border-radius:16px;border:1px solid var(--br)"><div style="font-size:36px;margin-bottom:11px">&#x1F550;</div>Buyurtmalar kutilmoqda...</div>':'')+
+  (on&&ts==='ready'?'<button class="abt ay" style="margin-top:10px" onclick="startTrip()">Sayohatni boshlash &#x2192;</button>':'')+
+  (on&&ts==='started'?'<button class="abt ag" style="margin-top:10px" onclick="endTrip()">Manzilga yetib keldik &#x2713;</button>':'')+
+  '</div>';
+}
+function togDrv(){
+  S.drOnline=!S.drOnline;var on=S.drOnline;
+  addNf(on?'&#x1F7E2; Online edingiz':'&#x26AB; Offline bo\'ldingiz',on?'Buyurtmalar kelib tushishi mumkin.':"Buyurtmalar to\u02bcxtatildi.");
+  if(on&&S.groups.find(function(g){return g.id==='g1'&&g.status==='ready';}))S.drTrip='ready';
+  else if(!on)S.drTrip='idle';
+  renderPage('driver');
+}
+function startTrip(){S.drTrip='started';S.groups=S.groups.map(function(g){return g.id==='g1'?Object.assign({},g,{status:'on_the_way'}):g;});addNf('Sayohat boshlandi &#x1F680;',"Yo\u02bclovchilar kutmoqda.");renderPage('driver');}
+function endTrip(){S.drTrip='idle';S.groups=S.groups.map(function(g){return g.id==='g1'?Object.assign({},g,{status:'delivered'}):g;});addNf('Yetib keldingiz &#x2705;','Safar muvaffaqiyatli yakunlandi.');renderPage('driver');}
+
+// ── CLIENT APP ────────────────────────────────────────────────────────
+function pageClient(){
+  var mine=S.orders.filter(function(o){return o.cid==='u1'||o.cid==='u_new';});
+  return '<div class="page" style="max-width:480px">'+
+  '<h2 style="font-size:22px;font-weight:900;margin-bottom:4px">Buyurtmalarim</h2>'+
+  '<p style="font-size:13px;color:var(--t2);margin-bottom:20px">Alisher Karimov &mdash; +998 90 123 45 67</p>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px">'+
+  '<button class="abt ay" onclick="openNewOrder(\'passenger\')" style="padding:15px">&#x1F6B6; Yo\'lovchi</button>'+
+  '<button class="abt agh" onclick="openNewOrder(\'cargo\')" style="padding:15px">&#x1F4E6; Yuk/Pochta</button></div>'+
+  '<div class="sh"><div class="sh-t">Buyurtmalar</div></div>'+
+  (!mine.length?'<div class="emp"><span class="emp-ic">&#x1F4CB;</span>Hali buyurtma yo\'q</div>':
+  mine.map(function(o){
+    var g=S.groups.find(function(gg){return gg.id===o.gid;});
+    return '<div class="card" style="margin-bottom:12px">'+
+    '<div style="display:flex;justify-content:space-between;margin-bottom:9px"><div style="display:flex;gap:6px">'+bdg(o.type)+' '+bdg(o.status)+'</div><span style="font-size:12px;color:var(--t2)">'+o.date+'</span></div>'+
+    '<div style="font-size:16px;font-weight:800;color:var(--y);margin-bottom:4px">'+dirl(o.dir)+'</div>'+
+    '<div style="font-size:12px;color:var(--t2);margin-bottom:11px">'+o.time+' &mdash; '+o.slots+' joy</div>'+
+    (g?'<div style="font-size:11px;color:var(--t2);margin-bottom:5px">Mashina to\'lishi</div>'+pbr(g.used,g.total)+slts(g.used,g.total):'')+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:11px;padding-top:11px;border-top:1px solid var(--br)">'+
+    '<span style="font-size:19px;font-weight:900">'+fmt(o.price)+'</span>'+
+    (o.status==='waiting'?'<button class="ibtn ir" onclick="cancelOrd(\''+o.id+'\')">Bekor qilish</button>':'')+
+    '</div></div>';
+  }).join(''))+
+  '</div>';
+}
+function cancelOrd(id){S.orders=S.orders.map(function(o){return o.id===id?Object.assign({},o,{status:'cancelled'}):o;});addNf('Bekor qilindi','Buyurtma bekor qilindi.');renderPage('client');}
+
+// ── NEW ORDER ─────────────────────────────────────────────────────────
+function openNewOrder(type){
+  var no=S.no;
+  no.type=type||'passenger';no.step=1;no.dir='ft';no.pay='cash';no.fragile=false;
+  openModal('Yangi buyurtma',renderNoStep());
+}
+function renderNoStep(){
+  var no=S.no,step=no.step,type=no.type,dir=no.dir;
+  var pr=S.pricing.find(function(p){return p.dir===dir;})||S.pricing[0];
+  var price=type==='passenger'?pr.pass:pr.md;
+  if(step===1){return''+
+    '<div class="fg"><label class="fl">Buyurtma turi</label><div class="tc">'+
+    '<div class="tc-card'+(type==='passenger'?' sel':'')+'" onclick="S.no.type=\'passenger\';rfModal()">'+
+    '<div style="font-size:28px;margin-bottom:6px">&#x1F6B6;</div><div style="font-size:14px;font-weight:800">Yo\'lovchi</div><div style="font-size:11px;color:var(--t2);margin-top:3px">1 joy, 80,000 so\'m</div></div>'+
+    '<div class="tc-card'+(type==='cargo'?' sel':'')+'" onclick="S.no.type=\'cargo\';rfModal()">'+
+    '<div style="font-size:28px;margin-bottom:6px">&#x1F4E6;</div><div style="font-size:14px;font-weight:800">Yuk / Pochta</div><div style="font-size:11px;color:var(--t2);margin-top:3px">Og\'irlikka qarab</div></div></div></div>'+
+    '<div class="fg"><label class="fl">Yo\'nalish</label><div class="dc">'+
+    '<div class="dc-card'+(dir==='ft'?' sel':'')+'" onclick="S.no.dir=\'ft\';rfModal()">Farg\'ona &#x2192; Toshkent</div>'+
+    '<div class="dc-card'+(dir==='tf'?' sel':'')+'" onclick="S.no.dir=\'tf\';rfModal()">Toshkent &#x2192; Farg\'ona</div></div></div>'+
+    '<div class="fr"><div class="fg" style="margin:0"><label class="fl">Sana</label><input class="fi" type="date" value="'+no.date+'" oninput="S.no.date=this.value"></div>'+
+    '<div class="fg" style="margin:0"><label class="fl">Vaqt</label><input class="fi" type="time" value="'+no.time+'" oninput="S.no.time=this.value"></div></div>'+
+    '<div style="margin-top:8px"><button class="abt ay" onclick="S.no.step=2;rfModal()">Davom etish &#x2192;</button></div>';}
+  return''+
+    (type==='cargo'?
+    '<div class="fg"><label class="fl">Yuk tavsifi</label><input class="fi" id="c-desc" placeholder="Masalan: kiyim..."></div>'+
+    '<div class="fr"><div class="fg" style="margin:0"><label class="fl">Og\'irlik (kg)</label><input class="fi" type="number" id="c-wt" placeholder="0"></div>'+
+    '<div class="fg" style="margin:0"><label class="fl">Qabul qiluvchi tel</label><input class="fi" id="c-ph" placeholder="+998 9X..."></div></div>'+
+    '<div class="fg"><label class="fl">Maxsus belgi</label><div class="cb-row" onclick="S.no.fragile=!S.no.fragile;this.querySelector(\'.cb\').className=\'cb\'+(S.no.fragile?\' chk\':\'\');this.querySelector(\'.cb\').textContent=S.no.fragile?\'&#x2713;\':\'\'">'+
+    '<div class="cb'+(no.fragile?' chk':'')+'">'+(no.fragile?'&#x2713;':'')+'</div><span style="font-size:14px">&#x26A0;&#xFE0F; Mo\'rt &mdash; ehtiyot bo\'ling</span></div></div>':'')+''+
+    '<div class="fg"><label class="fl">Izoh</label><textarea class="fi" id="o-notes" placeholder="Qo\'shimcha ma\'lumot..."></textarea></div>'+
+    '<div class="fg"><label class="fl">To\'lov usuli</label><div class="pc">'+
+    [['cash','&#x1F4B5; Naqd'],['click','&#x1F4B3; Click'],['payme','&#x1F4B3; Payme']].map(function(x){return'<div class="pc-card'+(no.pay===x[0]?' sel':'')+'" onclick="S.no.pay=\''+x[0]+'\';rfModal()">'+x[1]+'</div>';}).join('')+'</div></div>'+
+    '<div class="card csm" style="margin-bottom:13px;border-color:var(--br2)"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:var(--t2)">Jami to\'lov</span><span style="font-size:22px;font-weight:900;color:var(--y)">'+fmt(price)+'</span></div>'+
+    '<div style="font-size:12px;color:var(--t2);margin-top:4px">'+dirl(dir)+' &mdash; '+no.date+' '+no.time+'</div></div>'+
+    '<div class="step-btns"><button class="abt ar" style="flex:1" onclick="S.no.step=1;rfModal()">&#x2190; Orqaga</button><button class="abt ay" style="flex:2" onclick="submitOrd()">Buyurtma berish &#x2713;</button></div>';
+}
+function rfModal(){html('mo-body',renderNoStep());}
+function submitOrd(){
+  var no=S.no,type=no.type,dir=no.dir;
+  var pr=S.pricing.find(function(p){return p.dir===dir;})||S.pricing[0];
+  var price=type==='passenger'?pr.pass:pr.md,slots=1;
+  var grp=S.groups.find(function(g){return g.dir===dir&&g.date===no.date&&g.status==='waiting'&&(4-g.used)>=slots;});
+  if(!grp){grp={id:'g'+Date.now(),dir:dir,date:no.date,time:no.time,total:4,used:0,status:'waiting',dn:null};S.groups=S.groups.concat([grp]);}
+  var nu=Math.min(grp.used+slots,4),ns=nu>=4?'ready':'waiting';
+  S.groups=S.groups.map(function(g){return g.id===grp.id?Object.assign({},g,{used:nu,status:ns}):g;});
+  var ord={id:'o'+Date.now(),cid:'u_new',cn:'Yangi Mijoz',cp:'+998901234567',gid:grp.id,type:type,dir:dir,date:no.date,time:no.time,slots:slots,status:ns==='ready'?'ready':'waiting',price:price,ts:new Date().toISOString()};
+  S.orders=[ord].concat(S.orders);
+  closeModal();addNf('Buyurtma yaratildi &#x2705;',dirl(dir)+' &mdash; '+fmt(price));
+  if(ns==='ready')setTimeout(function(){addNf('Mashina tayyor! &#x1F697;',"Guruh to\u02bclldi, haydovchi biriktiriladi.");},1500);
+  buildNav();renderPage(curPage);
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────
+function openModal(title,body){html('mo-title',title);html('mo-body',body);g$('modal').classList.remove('hidden');}
+function closeModal(){g$('modal').classList.add('hidden');}
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────
+var nfId=0;
+function addNf(title,body){
+  var id=++nfId;var el=document.createElement('div');
+  el.className='nf';el.id='nf'+id;
+  el.innerHTML='<div class="nf-t">'+title+'</div><div class="nf-b">'+body+'</div>';
+  el.onclick=function(){el.remove();};
+  g$('nf-stack').appendChild(el);
+  setTimeout(function(){if(el.parentNode)el.remove();},4000);
+}
+</script>
+</body>
+</html>
